@@ -1,0 +1,10 @@
+services:
+  litchi:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      8000:8000
+    environment:
+      - TCL_USER=user
+      - TCL_PASS=pass
