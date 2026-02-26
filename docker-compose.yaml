@@ -1,10 +1,17 @@
 services:
   litchi:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
+      secrets:
+        - tcl_user
+        - tcl_pass
     ports:
       - 8000:8000
-    environment:
-      - TCL_USER=user
-      - TCL_PASS=pass
+    env_file: ".env"
+
+secrets:
+  tcl_pass:
+    environment: TCL_PASS
+  tcl_user:
+    environment: TCL_USER
