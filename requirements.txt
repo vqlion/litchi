@@ -1,0 +1,3 @@
+fastapi==0.133.1
+python-dotenv==1.2.1
+requests==2.32.5
