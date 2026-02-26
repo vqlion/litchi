@@ -1,0 +1,151 @@
+<html>
+
+<head>
+    <title>LITCHI</title>
+    <script src=" https://cdn.jsdelivr.net/npm/jquery@4.0.0/dist/jquery.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"
+        integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function refresh(params) {
+            lines = params.lines.split(',')
+            directions = params.directions
+            stops = params.stops
+            console.debug(lines, directions, stops)
+            $.ajax({
+                url: "/refresh",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "lines": lines.join(','),
+                    "directions": directions.join(','),
+                    "stop_ids": stops.join(',')
+                }),
+                success: function (data) {
+                    console.debug(data)
+                    parentDiv = $('<div class="parent"></div>')
+                    for (let line in data) {
+                        lineDiv = $(`<div class="line"></div>`)
+                        for (let stop in data[line]) {
+                            stopDiv = $(`<div class="stop">
+                                <div class="stop-head">
+                                    <img class="tcl-picto" src='static/${line}.svg', alt='${line}' />
+                                    <span>${stop}</span>
+                                    </div>
+                                </div>`)
+                            for (let direction in data[line][stop]) {
+                                directionLine = $(`<div class="direction"><span>${direction}</span></div>`)
+                                timeSep = $('<div class="time-sep"></div>')
+                                directionTimes = $(`<div class="times"></div>`)
+                                let n = 0
+                                for (let [i, time] of data[line][stop][direction].entries()) {
+                                    if (moment().isAfter(time)) continue
+                                    if (n > 1) break
+                                    directionTimes.append(`<span class="time">${moment(time).fromNow(true)}</span>`)
+                                    n++
+                                }
+                                directionLine.append(timeSep)
+                                directionLine.append(directionTimes)
+                                stopDiv.append(directionLine)
+                            }
+                            lineDiv.append(stopDiv)
+                        }
+                        parentDiv.append(lineDiv)
+                    }
+                    $("#res").html(parentDiv)
+                },
+                error: function (xhr, status, error) {
+                    $("#res").html(xhr.status + ': ' + xhr.statusText)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            const params = $('#params').data()
+
+            refresh(params)
+            setInterval(() => {
+                refresh()
+            }, 60000);
+        })
+    </script>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 1.5rem;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+
+        .tcl-picto {
+            height: 1.5ch
+        }
+
+        .parent {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            gap: 2rem;
+            height: 100%;
+        }
+
+        .line {
+            max-width: 1500px;
+            min-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .stop {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid black;
+            border-radius: 4px;
+        }
+
+        .stop-head {
+            display: flex;
+            font-weight: bold;
+            align-items: center;
+            gap: 1ch;
+        }
+
+        .direction {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .time-sep {
+            flex: 1;
+            background: radial-gradient(circle at center, black 0.05rem, transparent 0);
+            background-size: 1rem;
+            margin: 0 1rem;
+        }
+
+        .times {
+            display: flex;
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <meta id="params" data-lines="{{ lines }}" data-directions="{{ directions }}" data-stops="{{ stop_ids }}">
+    <main>
+        <div id="res">Loading...</div>
+    </main>
+</body>
+
+</html>
