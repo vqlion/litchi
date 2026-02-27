@@ -6,6 +6,8 @@ It is meant to be used as a kiosk app. The data is refreshed every 30 seconds.
 
 Try it out: https://tcl.vqlion.fr
 
+![example image: kiosk on raspberry pi](example.jpg)
+
 ## Usage 
 
 The app accepts url parameters to define the lines, stops & directions you want to display. The parameters are as follows :
