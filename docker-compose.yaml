@@ -9,6 +9,7 @@ services:
     ports:
       - 8000:8000
     env_file: ".env"
+    restart: always
 
 secrets:
   tcl_pass:
