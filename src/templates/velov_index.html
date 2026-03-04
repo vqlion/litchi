@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 
 <head>
@@ -6,10 +7,50 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"
         integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function refresh(params) {
+            from = params.from
+            to = params.to
+
+            $.ajax({
+                url: "/refresh/velov",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "st_from": from.join(','),
+                    "st_to": to.join(',')
+                }),
+                success: function (data) {
+                    console.debug(data)
+                    parentDiv = $('<div class="parent"></div>')
+
+                    for (let pair of data) {
+                        pairDiv = $(
+                            `<div>
+                            ${pair.from_station_name} (${pair.from_station_bikes}) ---> ${pair.to_station_name} (${pair.to_station_stands})<br/>
+                            ${pair.journey_status}
+                            </div>`
+                        )
+                        parentDiv.append(pairDiv)
+                    }
+
+                    $("#res").html(parentDiv)
+
+                }
+            })
+        }
+
+        $(document).ready(() => {
+            const params = $('#params').data()
+
+            refresh(params)
+        })
+    </script>
 </head>
 
 <body>
     <main>
+        <meta id="params" data-from="{{ from }}" data-to="{{ to }}">
         <div id="res">Hi :)</div>
     </main>
 </body>
