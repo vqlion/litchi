@@ -5,9 +5,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt && pip install "fastapi[standard]"
 
-RUN --mount=type=secret,id=tcl_pass,env=TCL_PASS --mount=type=secret,id=tcl_user,env=TCL_USER \
+RUN --mount=type=secret,id=grandlyon_pass,env=GRANDLYON_PASS --mount=type=secret,id=grandlyon_user,env=GRANDLYON_USER \
     mkdir -p static && \
-    curl -u "$TCL_USER:$TCL_PASS" https://download.data.grandlyon.com/files/rdata/tcl_sytral.tclpictogrammes/Pictogrammes_lignes_complets.zip -o picto.zip && \
+    curl -u "$GRANDLYON_USER:$GRANDLYON_PASS" https://download.data.grandlyon.com/files/rdata/tcl_sytral.tclpictogrammes/Pictogrammes_lignes_complets.zip -o picto.zip && \
     unzip picto.zip -d static && \
     rm picto.zip
 

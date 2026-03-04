@@ -15,8 +15,8 @@ class RefreshBody(BaseModel):
     directions: str
     stop_ids: str
 
-@app.get('/', response_class=HTMLResponse)
-def get_index(
+@app.get('/tcl', response_class=HTMLResponse)
+def get_tcl_index(
     request: Request,
     lines: Annotated[list[str] | None, Query()] = ['T1', 'C17'],
     directions: Annotated[list[int] | None, Query()] = [],
@@ -24,7 +24,7 @@ def get_index(
     ):
     return templates.TemplateResponse(
         request=request, 
-        name="index.html",
+        name="tcl_index.html",
         context={
             "lines": ','.join(lines),
             "directions": directions,
@@ -32,7 +32,7 @@ def get_index(
         }
         )
 
-@app.post('/refresh')
+@app.post('/refresh/tcl')
 def refresh_index(body: RefreshBody):
     lines = [] if body.lines == '' else body.lines.split(',')
     directions = [] if body.directions == '' else body.directions.split(',')
@@ -44,3 +44,7 @@ def refresh_index(body: RefreshBody):
     tcl_stops_to_names = parser.get_stop_names_from_tcl_data(raw_tcl_stops)
 
     return parser.prepare_tcl_data(raw_tcl_wait_times, tcl_stops_to_names)
+
+@app.get('/velov', response_class=HTMLResponse)
+def get_velov_index(request: Request):
+    return templates.TemplateResponse(request=request, name="velov_index.html")

@@ -4,15 +4,15 @@ services:
       context: .
       dockerfile: Dockerfile
       secrets:
-        - tcl_user
-        - tcl_pass
+        - grandlyon_user
+        - grandlyon_pass
     ports:
       - 8000:8000
     env_file: ".env"
     restart: always
 
 secrets:
-  tcl_pass:
-    environment: TCL_PASS
-  tcl_user:
-    environment: TCL_USER
+  grandlyon_pass:
+    environment: GRANDLYON_PASS
+  grandlyon_user:
+    environment: GRANDLYON_USER
