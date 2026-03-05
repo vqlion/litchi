@@ -1,14 +1,34 @@
-# LITCHI, a TCL Lyon web app
+# LITCHI, a TCL Velo'v Lyon web app
 
-Litchi is a web app to show wait times of Bus, Metro, Trams, or whatever other available transport mode in Lyon's TCL network.
+Litchi is a web app & helper for transport modes in Lyon. It has two missions:
 
-It is meant to be used as a kiosk app. The data is refreshed every minute.
+- to show wait times of Bus, Metro, Trams, or whatever other available transport mode in Lyon's TCL network.
+- to show whether Velo'v journeys are possible or not, based on the number of Velo'v & stands on the departing & arrival station.
 
-Try it out: https://tcl.vqlion.fr
+The TCL part is meant to be used as a kiosk app. The data is refreshed every minute.
+
+The Velo'v part is intended as a quick checking app on your phone.
+
+Try it out: https://litchi.vqlion.fr/tcl & https://litchi.vqlion.fr/velov
 
 ![example image: kiosk on raspberry pi](example.jpg)
 
 ## Usage 
+
+### Velov
+
+The app accepts url parameters to define the journeys. The parameters are a list of ids of departure station & a list of ids of arrival stations. **The stations are paired in order**: the first departure station is paired with the first arrival station, the second with the second... and so on.
+
+- `st_from`: ids of departure stations
+- `st_to`: ids of arrival stations
+
+You can find the station ids directly in the Velov app, by clicking on a station (the id is right next to its name).
+
+> Here's an example address:
+>
+> https://litchi.vqlion.fr/velov?st_from=1003&st_to=10021&st_from=1012&st_to=10043&st_from=10002&st_to=10004
+
+### TCL
 
 The app accepts url parameters to define the lines, stops & directions you want to display. The parameters are as follows :
 
@@ -21,7 +41,7 @@ The app accepts url parameters to define the lines, stops & directions you want 
 
 > Here's an example address: 
 > 
-> https://tcl.vqlion.fr/?lines=A&lines=T2&lines=C19&lines=49&stops=33777&stops=33775&stops=30101&stops=30459&stops=32102&stops=32103
+> https://litchi.vqlion.fr/tcl?lines=A&lines=T2&lines=C19&lines=49&stops=33777&stops=33775&stops=30101&stops=30459&stops=32102&stops=32103
 
 ## Installation
 
@@ -48,9 +68,9 @@ pip install -r requirements.txt && pip install fastapi[standard]
 
 Download and unzip the TCL pictograms to the static directory:
 ```sh
-mkdir -p src/static 
-curl -u "$TCL_USER:$TCL_PASS" https://download.data.grandlyon.com/files/rdata/tcl_sytral.tclpictogrammes/Pictogrammes_lignes_complets.zip -o picto.zip
-unzip picto.zip -d src/static
+mkdir -p src/static/tcl
+curl -u "$GRANDLYON_USER:$GRANDLYON_PASS" https://download.data.grandlyon.com/files/rdata/tcl_sytral.tclpictogrammes/Pictogrammes_lignes_complets.zip -o picto.zip
+unzip picto.zip -d src/static/tcl
 rm picto.zip
 ```
 

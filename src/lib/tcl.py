@@ -1,12 +1,5 @@
 import requests
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-TCL_BASE_URL = "https://data.grandlyon.com/fr/datapusher/ws/rdata/"
-TCL_USER = os.getenv('TCL_USER')
-TCL_PASS = os.getenv('TCL_PASS')
+from lib import grandlyon as gl
 
 def get_wait_times_from_tcl(lines: [str], directions: [int], stop_ids: [int]):
     tcl_endpoint = "tcl_sytral.tclpassagearret/all.json"
@@ -30,9 +23,8 @@ def get_wait_times_from_tcl(lines: [str], directions: [int], stop_ids: [int]):
             extra_params += f"{stop_id},"
         extra_params = extra_params.rstrip(',')
 
-    complete_url = TCL_BASE_URL + tcl_endpoint + extra_params
-    print(complete_url)
-    return make_tcl_get_request(complete_url)
+    complete_url = gl.GRANDLYON_BASE_URL + tcl_endpoint + extra_params
+    return gl.make_grandlyon_request(complete_url)
 
 def get_stops_from_tcl(stop_ids: [int]):
     tcl_endpoint = "tcl_sytral.tclarret/all.json"
@@ -43,11 +35,6 @@ def get_stops_from_tcl(stop_ids: [int]):
         extra_params += f"{stop},"
     extra_params = extra_params.rstrip(',')
 
-    complete_url = TCL_BASE_URL + tcl_endpoint + extra_params
+    complete_url = gl.GRANDLYON_BASE_URL + tcl_endpoint + extra_params
 
-    return make_tcl_get_request(complete_url)
-
-def make_tcl_get_request(url: str):
-    res = requests.get(url, auth=(TCL_USER, TCL_PASS))
-    res.raise_for_status()
-    return res.json()
+    return gl.make_grandlyon_request(complete_url)
