@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, Query
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from typing import Annotated
 from pydantic import BaseModel
@@ -18,6 +18,10 @@ class TCLRefreshBody(BaseModel):
 class VELOVRefreshBody(BaseModel):
     st_from: str
     st_to: str
+
+@app.get('/')
+def get_index():
+    return RedirectResponse(url="/tcl")
 
 @app.get('/tcl', response_class=HTMLResponse)
 def get_tcl_index(
