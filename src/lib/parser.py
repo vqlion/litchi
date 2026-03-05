@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+import re
 
 def prepare_tcl_data(data: dict, stop_ids_to_name: dict):
     '''
@@ -47,8 +48,8 @@ class VelovPairConclusion(BaseModel):
     from_station_name: str
     to_station_name: str
     from_station_bikes: int = -1
-    from_station_elec: bool = False
-    from_station_mec: bool = False
+    from_station_elec: int = -1
+    from_station_mec: int = -1
     to_station_stands: int = -1
     journey_status: str = "no"
 
@@ -69,18 +70,21 @@ def prepare_velov_data(data: dict, pairs: [(int, int)]):
         if from_data == None or to_data == None:
             continue
 
+        from_station_name = re.findall(r'[0-9]+\s-\s(.*)$', from_data['name'])
+        from_station_name = from_station_name[0] if len(from_station_name) > 0 else from_data['name']
+
+        to_station_name = re.findall(r'[0-9]+\s-\s(.*)$', to_data['name'])
+        to_station_name = to_station_name[0] if len(to_station_name) > 0 else to_data['name']
+
         conclusion = VelovPairConclusion(
             from_station=station_from, 
             to_station=station_to,
-            from_station_name=from_data["name"],
-            to_station_name=to_data["name"]
+            from_station_name=from_station_name,
+            to_station_name=to_station_name
             )
 
-        if from_data["total_stands"]["availabilities"]["electricalBikes"] > 0:
-            conclusion.from_station_elec = True
-
-        if from_data["total_stands"]["availabilities"]["mechanicalBikes"] > 0:
-            conclusion.from_station_mec = True
+        conclusion.from_station_elec = from_data["total_stands"]["availabilities"]["electricalBikes"]
+        conclusion.from_station_mec = from_data["total_stands"]["availabilities"]["mechanicalBikes"]
 
         conclusion.from_station_bikes = from_data["total_stands"]["availabilities"]["bikes"]
         conclusion.to_station_stands = to_data["total_stands"]["availabilities"]["stands"]

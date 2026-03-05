@@ -25,10 +25,34 @@
                     parentDiv = $('<div class="parent"></div>')
 
                     for (let pair of data) {
+                        journeyIcon = "check-circle-outline.svg"
+                        pairColor = "#6D9F71"
+                        if (pair.journey_status == "warn") {
+                            journeyIcon = "alert-outline.svg"
+                            pairColor = "#f5b700"
+                        }
+                        if (pair.journey_status == "no") {
+                            journeyIcon = "cancel.svg"
+                            pairColor = "#FF6666"
+                        }
                         pairDiv = $(
-                            `<div>
-                            ${pair.from_station_name} (${pair.from_station_bikes}) ---> ${pair.to_station_name} (${pair.to_station_stands})<br/>
-                            ${pair.journey_status}
+                            `<div class="pair" style="background-color: ${pairColor};">
+                                <div class="station">
+                                    ${pair.from_station_name}
+                                    <div class="bikes">
+                                        <span><img class="icon" src="static/styles/bicycle.svg" />${pair.from_station_mec}</span>
+                                        <span><img class="icon" src="static/styles/bicycle-electric.svg" /> ${pair.from_station_elec}</span>  
+                                    </div>
+                                </div>
+                                <div class="travel">
+                                    <img class="travel-icon" src="static/styles/${journeyIcon}" />
+                                </div>
+                                <div class="station to">
+                                    ${pair.to_station_name}
+                                    <div class="bikes">
+                                        <span>${pair.to_station_stands}<img class="icon" src="static/styles/parking.svg" /></span>
+                                    </div>
+                                </div>
                             </div>`
                         )
                         parentDiv.append(pairDiv)
@@ -51,7 +75,63 @@
     <style>
         .parent {
             display: flex;
+            align-items: center;
             width: 100%;
+            flex-direction: column;
+            padding: 2rem 6rem;
+            gap: 1.5rem;
+        }
+
+        .pair {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #CDCDCD;
+            padding: 1rem;
+            border-radius: 5px;
+            gap: 1rem;
+        }
+
+        .travel {
+            text-align: center;
+        }
+
+        .station {
+            flex: 1
+        }
+
+        .to {
+            text-align: right;
+        }
+
+        .icon {
+            height: 2ch;
+            margin-right: 10px;
+        }
+
+        .travel-icon {
+            height: 4rem;
+        }
+
+        .bikes {
+            display: flex;
+            gap: 2ch;
+            margin-top: 1rem;
+        }
+
+        .bikes span {
+            display: flex;
+        }
+
+        .to .bikes {
+            justify-content: end;
+        }
+
+        .to .bikes .icon {
+            margin-right: 0;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -59,7 +139,12 @@
 <body>
     <main>
         <meta id="params" data-from="{{ from }}" data-to="{{ to }}">
-        <div id="res">Hi :)</div>
+        <div class="gith-icon">
+            <a href="https://github.com/vqlion/litchi" target="_blank"><img src="static/styles/github.svg" alt="github icon"></a>
+        </div>
+        <div id="res">
+            <img src="static/styles/loading.svg" class="load-icon" alt="">
+        </div>
     </main>
 </body>
 

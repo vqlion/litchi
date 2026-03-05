@@ -30,7 +30,7 @@
                         for (let stop in data[line]) {
                             stopDiv = $(`<div class="stop">
                                 <div class="stop-head">
-                                    <img class="tcl-picto" src='static/${line}.svg', alt='${line}' />
+                                    <img class="tcl-picto" src='static/tcl/${line}.svg', alt='${line}' />
                                     <span>${stop}</span>
                                     </div>
                                 </div>`)
@@ -79,11 +79,13 @@
             align-items: center;
             gap: 2rem;
             padding: 2rem 0;
+            width: 100%;
         }
 
         .line {
-            width: 90%;
             display: flex;
+            width: 100%;
+            max-width: 1200px;
             flex-direction: column;
             gap: 2rem;
         }
@@ -93,7 +95,7 @@
             flex-direction: column;
             gap: 1rem;
             padding: 1rem;
-            border: 2px solid black;
+            background-color: #FFE1EA;
             border-radius: 4px;
         }
 
@@ -127,7 +129,13 @@
 <body>
     <meta id="params" data-lines="{{ lines }}" data-directions="{{ directions }}" data-stops="{{ stop_ids }}">
     <main>
-        <div id="res">Loading...</div>
+        <div class="gith-icon">
+            <a href="https://github.com/vqlion/litchi" target="_blank"><img src="static/styles/github.svg"
+                    alt="github icon"></a>
+        </div>
+        <div id="res">
+            <img src="static/styles/loading.svg" class="load-icon" alt="">
+        </div>
     </main>
 </body>
 
