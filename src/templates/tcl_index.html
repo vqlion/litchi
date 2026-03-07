@@ -10,8 +10,8 @@
     <script>
         function refresh(params) {
             lines = params.lines.split(',')
-            directions = params.directions
-            stops = params.stops
+            directions = params.directions.split(',')
+            stops = params.stops.split(',')
             console.debug(lines, directions, stops)
             $.ajax({
                 url: "/refresh/tcl",

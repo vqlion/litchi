@@ -16,8 +16,7 @@ class TCLRefreshBody(BaseModel):
     stop_ids: str
 
 class VELOVRefreshBody(BaseModel):
-    st_from: str
-    st_to: str
+    pairs: str
 
 @app.get('/')
 def get_index():
@@ -26,15 +25,15 @@ def get_index():
 @app.get('/tcl', response_class=HTMLResponse)
 def get_tcl_index(
     request: Request,
-    lines: Annotated[list[str] | None, Query()] = ['T1', 'C17'],
-    directions: Annotated[list[int] | None, Query()] = [],
-    stops: Annotated[list[int] | None, Query()] = [34067, 34068, 43114]
+    lines: Annotated[str | None, Query()] = 'T1,C17',
+    directions: Annotated[str | None, Query()] = "",
+    stops: Annotated[str | None, Query()] = "34067,34068,43114"
     ):
     return templates.TemplateResponse(
         request=request, 
         name="tcl_index.html",
         context={
-            "lines": ','.join(lines),
+            "lines": lines,
             "directions": directions,
             "stop_ids": stops
         })
@@ -55,27 +54,28 @@ def refresh_tcl_index(body: TCLRefreshBody):
 @app.get('/velov', response_class=HTMLResponse)
 def get_velov_index(
     request: Request,
-    st_from: Annotated[list[int] | None, Query()] = [7027],
-    st_to: Annotated[list[int] | None, Query()] = [7009]
+    pairs: Annotated[list[str] | None, Query()] = ["10002,7009"]
     ):
+    print(pairs)
     return templates.TemplateResponse(
         request=request, 
         name="velov_index.html",
         context={
-            "from": st_from,
-            "to": st_to
+            "pairs": pairs
         })
 
 @app.post('/refresh/velov')
 def refresh_velov(body: VELOVRefreshBody):
-    st_from = [] if body.st_from == '' else body.st_from.split(',')
-    st_to = [] if body.st_to == '' else body.st_to.split(',')
-
-    pair_count = min(len(st_from), len(st_to))
-    pairs = []
-    for i in range(pair_count):
-        pairs.append((int(st_from[i]), int(st_to[i])))
+    request_pairs = [] if body.pairs == '' else body.pairs.split('-')
     
-    raw_velov_data = velov.get_stations_info(st_from + st_to)
+    pairs = []
+    stations = []
+    for pair in request_pairs:
+        p = pair.split(',')
+        pairs.append((int(p[0]), int(p[1])))
+        stations.append(int(p[0]))
+        stations.append((int(p[1])))
+
+    raw_velov_data = velov.get_stations_info(stations)
 
     return parser.prepare_velov_data(raw_velov_data, pairs)

@@ -17,20 +17,19 @@ Try it out: https://litchi.vqlion.fr/tcl & https://litchi.vqlion.fr/velov
 
 ### Velov
 
-The app accepts url parameters to define the journeys. The parameters are a list of ids of departure station & a list of ids of arrival stations. **The stations are paired in order**: the first departure station is paired with the first arrival station, the second with the second... and so on.
+The app accepts url parameters to define the journeys. The parameters are a list of pairs of ids of departure & arrival stations.
 
-- `st_from`: ids of departure stations
-- `st_to`: ids of arrival stations
+- `pairs`: ids of the departure & arrival station, in order, separated by a comma (,)
 
 You can find the station ids directly in the Velov app, by clicking on a station (the id is right next to its name).
 
-> Here's an example address:
+> Here's an example address. The first pair describes a journey from the station with id 1003 to the station 10021, and so on:
 >
-> https://litchi.vqlion.fr/velov?st_from=1003&st_to=10021&st_from=1012&st_to=10043&st_from=10002&st_to=10004
+> https://litchi.vqlion.fr/velov?pairs=1003,10021&pairs=1012,10043&pairs=10002,10004
 
 ### TCL
 
-The app accepts url parameters to define the lines, stops & directions you want to display. The parameters are as follows :
+The app accepts url parameters to define the lines, stops & directions you want to display. The parameters are delimited with commas (,)
 
 - `line`: line names (e.g. `T4`, `A` or `69`)
 - `stops`: stop **ids**
@@ -41,7 +40,7 @@ The app accepts url parameters to define the lines, stops & directions you want 
 
 > Here's an example address: 
 > 
-> https://litchi.vqlion.fr/tcl?lines=A&lines=T2&lines=C19&lines=49&stops=33777&stops=33775&stops=30101&stops=30459&stops=32102&stops=32103
+> https://litchi.vqlion.fr/tcl?lines=A,T2,C19,49&stops=33777,33775,30101,30459,32102,32103
 
 ## Installation
 
@@ -63,7 +62,7 @@ Install the dependencies:
 ```sh
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt && pip install fastapi[standard]
+pip install -r requirements.txt
 ```
 
 Download and unzip the TCL pictograms to the static directory:

@@ -3,7 +3,7 @@ FROM python:3.13
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt && pip install "fastapi[standard]"
+RUN pip install -r requirements.txt
 
 RUN --mount=type=secret,id=grandlyon_pass,env=GRANDLYON_PASS --mount=type=secret,id=grandlyon_user,env=GRANDLYON_USER \
     mkdir -p static/tcl && \

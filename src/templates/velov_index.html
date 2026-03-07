@@ -9,16 +9,12 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         function refresh(params) {
-            from = params.from
-            to = params.to
-
             $.ajax({
                 url: "/refresh/velov",
                 type: "POST",
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    "st_from": from.join(','),
-                    "st_to": to.join(',')
+                    "pairs": eval(params.pairs).join('-')
                 }),
                 success: function (data) {
                     console.debug(data)
@@ -138,7 +134,7 @@
 
 <body>
     <main>
-        <meta id="params" data-from="{{ from }}" data-to="{{ to }}">
+        <meta id="params" data-pairs="{{ pairs }}">
         <div class="gith-icon">
             <a href="https://github.com/vqlion/litchi" target="_blank"><img src="static/styles/github.svg" alt="github icon"></a>
         </div>
