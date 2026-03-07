@@ -12,6 +12,7 @@ The Velo'v part is intended as a quick checking app on your phone.
 Try it out: https://litchi.vqlion.fr/tcl & https://litchi.vqlion.fr/velov
 
 ![example image: kiosk on raspberry pi](example.jpg)
+*Example usage on a raspberry pi with a 7inch touchscreen*
 
 ## Usage 
 
