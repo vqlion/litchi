@@ -23,17 +23,19 @@
 
                     for (let parking of data) {
                         percentFull = Math.floor(100 * (parking.nb_tot_place_dispo / parking.capacite))
-                        bgColor = "#6D9F71"
+                        barColor = "#6D9F71"
+                        bgColor = "#bababa"
                         if (percentFull < 20) {
-                            bgColor = "#f5b700"
+                            barColor = "#f5b700"
                         }
                         if (percentFull == 0) {
+                            barColor = "#FF6666"
                             bgColor = "#FF6666"
                         }
                         parkingDiv = $(
                             `<div 
                                 class="park" 
-                                style="background: ${bgColor}; background: linear-gradient(90deg, ${bgColor} 0%, ${bgColor} ${percentFull}%, #bababa ${percentFull}%);"
+                                style="background: ${barColor}; background: linear-gradient(90deg, ${barColor} 0%, ${barColor} ${percentFull}%, ${bgColor} ${percentFull}%);"
                                 >
                                 <div class="park-header">
                                     <img class="icon" src="static/styles/parking.svg" />
