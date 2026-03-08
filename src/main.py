@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from typing import Annotated
 from pydantic import BaseModel
-from lib import tcl, velov, parser
+from lib import tcl, velov, park, parser
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -18,16 +18,19 @@ class TCLRefreshBody(BaseModel):
 class VELOVRefreshBody(BaseModel):
     pairs: str
 
+class ParkRefreshBody(BaseModel):
+    parks: str
+
 @app.get('/')
 def get_index():
     return RedirectResponse(url="/tcl")
 
 @app.get('/tcl', response_class=HTMLResponse)
 def get_tcl_index(
-    request: Request,
-    lines: Annotated[str | None, Query()] = 'T1,C17',
-    directions: Annotated[str | None, Query()] = "",
-    stops: Annotated[str | None, Query()] = "34067,34068,43114"
+        request: Request,
+        lines: Annotated[str | None, Query()] = 'T1,C17',
+        directions: Annotated[str | None, Query()] = "",
+        stops: Annotated[str | None, Query()] = "34067,34068,43114"
     ):
     return templates.TemplateResponse(
         request=request, 
@@ -53,8 +56,8 @@ def refresh_tcl_index(body: TCLRefreshBody):
 
 @app.get('/velov', response_class=HTMLResponse)
 def get_velov_index(
-    request: Request,
-    pairs: Annotated[list[str] | None, Query()] = ["10002,7009"]
+        request: Request,
+        pairs: Annotated[list[str] | None, Query()] = ["10002,7009"]
     ):
     print(pairs)
     return templates.TemplateResponse(
@@ -79,3 +82,21 @@ def refresh_velov(body: VELOVRefreshBody):
     raw_velov_data = velov.get_stations_info(stations)
 
     return parser.prepare_velov_data(raw_velov_data, pairs)
+
+@app.get('/park', response_class=HTMLResponse)
+def get_park_index(
+        request: Request,
+        parks: Annotated[str | None, Query()] = ""
+    ):
+    return templates.TemplateResponse(
+        request=request,
+        name="park_index.html",
+        context={
+            "parks": parks
+        }
+    )
+
+@app.post('/refresh/park')
+def refresh_park(body: ParkRefreshBody):
+    parking_ids = [] if body.parks == '' else body.parks.split(',')
+    return parser.prepare_parking_data(park.get_parks_dispos(parking_ids))

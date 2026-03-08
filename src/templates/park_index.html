@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>LITCHI VELOV</title>
+    <script src=" https://cdn.jsdelivr.net/npm/jquery@4.0.0/dist/jquery.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"
+        integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="icon" type="image/svg" href="static/styles/parking.svg">
+    <script>
+        function refresh(params) {
+            $.ajax({
+                url: "/refresh/park",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "parks": params.parks
+                }),
+                success: function (data) {
+                    console.debug(data)
+                    parentDiv = $('<div class="parent"></div>')
+
+                    for (let parking of data) {
+                        percentFull = Math.floor(100 * (parking.nb_tot_place_dispo / parking.capacite))
+                        bgColor = "#6D9F71"
+                        if (percentFull < 20) {
+                            bgColor = "#f5b700"
+                        }
+                        if (percentFull < 5) {
+                            bgColor = "#FF6666"
+                        }
+                        parkingDiv = $(
+                            `<div 
+                                class="park" 
+                                style="background: ${bgColor}; background: linear-gradient(90deg, ${bgColor} 0%, ${bgColor} ${percentFull}%, #bababa ${percentFull}%);"
+                                >
+                                <div class="park-header">
+                                    <img class="icon" src="static/styles/parking.svg" />
+                                    <span>${parking.nom}</span>
+                                    <span style="font-size: 1.2rem; margin-left: 1rem;">(${parking.id})</span>
+                                </div>
+                                <span>${parking.nb_tot_place_dispo}/${parking.capacite}</span>
+                            </div>`
+                        )
+                        parentDiv.append(parkingDiv)
+                    }
+                    $("#res").html(parentDiv)
+
+                }
+            })
+        }
+
+        $(document).ready(() => {
+            const params = $('#params').data()
+            refresh(params)
+        })
+    </script>
+    <link rel="stylesheet" href="static/styles/index.css">
+
+    <style>
+        .parent {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            flex-direction: column;
+            padding: 2rem 6rem;
+            gap: 1.5rem;
+        }
+
+        .park {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #CDCDCD;
+            padding: 1rem;
+            border-radius: 5px;
+            gap: 1rem;
+        }
+
+        .park-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .icon {
+            height: 2ch;
+            margin-right: 10px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <meta id="params" data-parks="{{ parks }}">
+        <div class="gith-icon">
+            <a href="https://github.com/vqlion/litchi" target="_blank"><img src="static/styles/github.svg" alt="github icon"></a>
+        </div>
+        <h1>Taux de remplissage des parkings relais de la métropole de Lyon</h1>
+        <div id="res">
+            <img src="static/styles/loading.svg" class="load-icon" alt="">
+        </div>
+    </main>
+</body>
+
+</html>

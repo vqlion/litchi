@@ -30,7 +30,7 @@ def get_stops_from_tcl(stop_ids: [int]):
     tcl_endpoint = "tcl_sytral.tclarret/all.json"
     extra_params = ""
 
-    if len(stop_ids) > 0: extra_params += f"?id__in="
+    if len(stop_ids) > 0 and stop_ids[0] != "": extra_params += f"?id__in="
     for stop in stop_ids:
         extra_params += f"{stop},"
     extra_params = extra_params.rstrip(',')

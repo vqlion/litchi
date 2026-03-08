@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 import re
 
+#####
+# TCL
+#####
 def prepare_tcl_data(data: dict, stop_ids_to_name: dict):
     '''
     returns a dict: line -> dict of stops -> dict of directions -> list of passage times
@@ -42,6 +45,9 @@ def get_stop_names_from_tcl_data(data: dict):
 
     return res
 
+########
+# VELO'V
+########
 class VelovPairConclusion(BaseModel):
     from_station: int
     to_station: int
@@ -52,7 +58,6 @@ class VelovPairConclusion(BaseModel):
     from_station_mec: int = -1
     to_station_stands: int = -1
     journey_status: str = "no"
-
 
 def prepare_velov_data(data: dict, pairs: [(int, int)]):
     conclusions = []
@@ -97,3 +102,9 @@ def prepare_velov_data(data: dict, pairs: [(int, int)]):
         conclusions.append(conclusion)
 
     return conclusions
+
+#########
+# PARKINGS RELAIS
+#########
+def prepare_parking_data(data: dict):
+    return data["values"]
